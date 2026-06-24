@@ -200,7 +200,6 @@ public class AttoBot extends TelegramLongPollingBot {
     public void send(Long chatId, String str) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.enableMarkdown(true);
         sendMessage.setText(str);
         sendTypingStatus(chatId);
 

@@ -66,8 +66,10 @@ public class BotUserSession implements BotHandler {
         String text = message.hasText() ? message.getText().trim() : null;
 
         String currentStep = session.getCurrentStep();
-        currentStep = getCurrentStepIfCallBackQuery(message, bot, update, currentStep);
-        session.setCurrentStep(currentStep);
+        if (update.hasCallbackQuery()) {
+            currentStep = getCurrentStepIfCallBackQuery(message, bot, update, currentStep);
+            session.setCurrentStep(currentStep);
+        }
         switch (currentStep) {
             case "USER_MENU" -> {
                 Stack<String> buttons = new Stack<>();
@@ -112,8 +114,10 @@ public class BotUserSession implements BotHandler {
         String text = message.hasText() ? message.getText().trim() : null;
 
         String currentStep = session.getCurrentStep();
-        currentStep = getCurrentStepIfCallBackQuery(message, bot, update, currentStep);
-        session.setCurrentStep(currentStep);
+        if (update.hasCallbackQuery()) {
+            currentStep = getCurrentStepIfCallBackQuery(message, bot, update, currentStep);
+            session.setCurrentStep(currentStep);
+        }
         switch (currentStep) {
             case "USER_card_section" -> cardSectionMenu(message, bot);
             case "USER_card_section_refill" -> {
@@ -273,15 +277,17 @@ public class BotUserSession implements BotHandler {
         String text = message.hasText() ? message.getText().trim() : null;
 
         String currentStep = session.getCurrentStep();
-        currentStep = getCurrentStepIfCallBackQuery(message, bot, update, currentStep);
-        session.setCurrentStep(currentStep);
+        if (update.hasCallbackQuery()) {
+            currentStep = getCurrentStepIfCallBackQuery(message, bot, update, currentStep);
+            session.setCurrentStep(currentStep);
+        }
         switch (currentStep) {
             case "USER_transaction_section" -> transactionSectionMenu(message, bot);
             case "USER_transaction_section_transaction_list" -> {
                 List<Transaction> transactions = profileController.transactionList(session.getAuthenticatedUser());
                 if (transactions.isEmpty()) {
                     bot.send(chatId, "No transactions found!");
-                }else{
+                } else {
                     for (Transaction transaction : transactions) {
                         bot.send(chatId, String.valueOf(transaction));
                     }
@@ -302,7 +308,7 @@ public class BotUserSession implements BotHandler {
                     bot.send(chatId, terminal.toString());
                     terminalCodeInput(session, message, bot, chatId);
                     session.setCurrentStep("USER_transaction_section_terminal_code");
-                }else{
+                } else {
                     bot.send(chatId, "Something went wrong! Please try again later.");
                     session.setCurrentStep("USER_transaction_section");
                 }

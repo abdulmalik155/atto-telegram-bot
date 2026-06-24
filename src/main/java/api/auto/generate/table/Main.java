@@ -1,6 +1,7 @@
 package api.auto.generate.table;
 
 import api.auto.generate.table.Bot.AttoBot;
+import api.auto.generate.table.controller.AuthController;
 import api.auto.generate.table.ui.AuthUi;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -9,9 +10,19 @@ public class Main {
     void main() {
 
         if (System.getenv("RENDER") != null) {
-            System.out.println("Render environment detected. Bypassing interactive menu.");
+            System.out.println("Render environment detected. Booting cloud banking core...");
 
-            // Start the mock server so Render doesn't shut us down
+            // CRITICAL FIX: Trigger the background engines so authentication and session state processing work!
+            try {
+                AuthController authController = new AuthController();
+                authController.triggerAutomationWorker();
+                authController.triggerAutomationWorker2();
+                System.out.println("Asynchronous banking pipelines successfully online.");
+            } catch (Exception e) {
+                System.out.println("Error initializing background workers: " + e.getMessage());
+            }
+
+            // Start the mock HTTP port server so Render keeps the app online
             try {
                 int port = System.getenv("PORT") != null ? Integer.parseInt(System.getenv("PORT")) : 8080;
                 com.sun.net.httpserver.HttpServer server = com.sun.net.httpserver.HttpServer.create(
@@ -30,7 +41,7 @@ public class Main {
                 System.out.println("Failed to start port binding helper: " + e.getMessage());
             }
 
-            // Directly boot up the Telegram Bot on the cloud
+            // Fire up the Telegram Bot pipeline
             try {
                 TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
                 botsApi.registerBot(new AttoBot());
@@ -40,10 +51,9 @@ public class Main {
             }
 
         } else {
-            // 2. Local Machine fallback: Safe restoration of your full interactive console setup
+            // 2. Local Machine fallback: Run your interactive console setup normally
             System.out.println("Local machine detected. Launching full console interface...");
             new AuthUi().run();
         }
-
     }
 }

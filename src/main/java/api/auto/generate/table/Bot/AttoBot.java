@@ -4,6 +4,7 @@ import api.auto.generate.table.Bot.DtoForBot.UserSessionDTO;
 import api.auto.generate.table.Bot.SessionManagers.BotSessionManager;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.ActionType;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -51,6 +52,14 @@ public class AttoBot extends TelegramLongPollingBot {
             text = update.getCallbackQuery().getData().trim();
         } else {
             return;
+        }
+        try {
+            AnswerCallbackQuery answer =
+                    new org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery();
+            answer.setCallbackQueryId(update.getCallbackQuery().getId());
+            execute(answer); // Tells Telegram the button click was handled successfully
+        } catch (Exception e) {
+            System.out.println("Failed to unlock inline interface: " + e.getMessage());
         }
 
         if (text.equals("/start") ) {

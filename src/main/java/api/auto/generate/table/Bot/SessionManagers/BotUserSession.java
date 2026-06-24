@@ -67,6 +67,7 @@ public class BotUserSession implements BotHandler {
 
         String currentStep = session.getCurrentStep();
         currentStep = getCurrentStepIfCallBackQuery(message, bot, update, currentStep);
+        session.setCurrentStep(currentStep);
         switch (currentStep) {
             case "USER_MENU" -> {
                 Stack<String> buttons = new Stack<>();
@@ -112,7 +113,7 @@ public class BotUserSession implements BotHandler {
 
         String currentStep = session.getCurrentStep();
         currentStep = getCurrentStepIfCallBackQuery(message, bot, update, currentStep);
-
+        session.setCurrentStep(currentStep);
         switch (currentStep) {
             case "USER_card_section" -> cardSectionMenu(message, bot);
             case "USER_card_section_refill" -> {
@@ -273,6 +274,7 @@ public class BotUserSession implements BotHandler {
 
         String currentStep = session.getCurrentStep();
         currentStep = getCurrentStepIfCallBackQuery(message, bot, update, currentStep);
+        session.setCurrentStep(currentStep);
         switch (currentStep) {
             case "USER_transaction_section" -> transactionSectionMenu(message, bot);
             case "USER_transaction_section_transaction_list" -> {

@@ -16,19 +16,6 @@ import java.time.LocalDateTime;
 public class AuthUi {
     private final AuthController authController = new AuthController();
 
-   /* public void run() {
-        authController.triggerAutomationWorker();
-        authController.triggerAutomationWorker2();
-        while (true) {
-            switch (authUsingBotOrAppMenu()) {
-                case 1 -> authByBot();
-                case 2 -> authByApp();
-                case 0 -> {
-                    return;
-                }
-            }
-        }
-    }*/
    public void run() {
        // If running on Render, bypass the console menu completely
        if (System.getenv("RENDER") != null) {

@@ -1,1 +1,13 @@
-[{"chatId":0,"createdDate":"2026-06-19","name":"Adminbek","phone":"1","pswd":"1","role":"ADMIN","status":"ACTIVE_USER","surname":"Adminjonov","visibleUser":null},{"chatId":0,"createdDate":"2026-06-20","name":"ali","phone":"12","pswd":"12","role":"USER","status":"ACTIVE_USER","surname":"aliev","visibleUser":true},{"chatId":0,"createdDate":"2026-06-19","name":"vali","phone":"111","pswd":"111","role":"USER","status":"ACTIVE_USER","surname":"valiev","visibleUser":true},{"chatId":0,"createdDate":"2026-06-20","name":"ali","phone":"12","pswd":"12","role":"USER","status":"CREATED_USER","surname":"aliev","visibleUser":true},{"chatId":0,"createdDate":"2026-06-21","name":"shaxzod","phone":"+998998149910","pswd":"2010","role":"USER","status":"ACTIVE_USER","surname":"sharipov","visibleUser":true},{"chatId":0,"createdDate":"2026-06-22","name":"abdulmalik","phone":"+998998707128","pswd":"4569","role":"USER","status":"ACTIVE_USER","surname":"fayziev","visibleUser":true},{"chatId":0,"createdDate":"2026-06-24","name":"Sunnatillo","phone":"998884560275","pswd":"900","role":"USER","status":"ACTIVE_USER","surname":"Ismailov","visibleUser":true},{"chatId":0,"createdDate":"2026-06-24","name":"Nik","phone":"998777668778","pswd":"Cat","role":"USER","status":"ACTIVE_USER","surname":"Huuu","visibleUser":true}]
+[
+  {
+    "chatId": 0,
+    "createdDate": "2026-06-19",
+    "name": "Adminbek",
+    "phone": "1",
+    "pswd": "1",
+    "role": "ADMIN",
+    "status": "ACTIVE_USER",
+    "surname": "Adminjonov",
+    "visibleUser": null
+  }
+]

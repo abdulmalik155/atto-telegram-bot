@@ -1,6 +1,9 @@
-# Stage 1: Build the application with Maven and Java 25
-FROM maven:3.9.9-eclipse-temurin-25 AS build
+# Stage 1: Build the application with Java 25 and manually installed Maven
+FROM eclipse-temurin:25-jdk AS build
 WORKDIR /app
+
+# Install Maven manually
+RUN apt-get update && apt-get install -y maven
 
 # Copy dependency structures and download them
 COPY pom.xml .

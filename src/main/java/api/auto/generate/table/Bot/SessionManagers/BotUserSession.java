@@ -395,9 +395,14 @@ public class BotUserSession implements BotHandler {
                         if (errorDesc.contains("Forbidden: bot was blocked by the user") || errorDesc.contains("Chat not found")) {
                             throw new RuntimeException("Termination: User blocked bot.");
                         }
-                        if (errorDesc.contains("Bad Request: message to edit not found") || errorDesc.contains("message is not modified")) {
+
+                        // FIXED SEPARATION: Safe logging for message modification warnings
+                        if (errorDesc.contains("message is not modified")) {
+                            System.out.println("INFO: Text un-modified on this tick. Keeping timer alive.");
+                        } else if (errorDesc.contains("Bad Request: message to edit not found")) {
                             throw new RuntimeException("Termination: Message missing.");
                         }
+
                         if (errorDesc.contains("Too Many Requests")) {
                             System.err.println("WARN: Rate limited on UI timer. Skipping tick.");
                         }
@@ -409,6 +414,7 @@ public class BotUserSession implements BotHandler {
             e.printStackTrace();
         }
     }
+
 
     private static void amountInput(UserSessionDTO session, Message message, AttoBot bot, String text) {
         Stack<String> buttons = new Stack<>();

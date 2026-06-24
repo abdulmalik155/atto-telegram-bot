@@ -44,17 +44,43 @@ public class AuthRepository extends FileHandling<Profile, Profile[]> {
                 .findFirst().orElse(null);
     }
 
+    /*  public Profile confirmLogin(AuthLogin request) {
+          Profile profile = findUser(request);
+          profile.setStatus(UserStatus.ACTIVE_USER);
+          List<Profile> users = read();
+          users.set(read().indexOf(
+                          findUser(request)),
+                  profile);
+          boolean saved = save(users, false);
+          if (saved) {
+              return profile;
+          }
+          return null;
+      }*/
     public Profile confirmLogin(AuthLogin request) {
-        Profile profile = findUser(request);
-        profile.setStatus(UserStatus.ACTIVE_USER);
         List<Profile> users = read();
-        users.set(read().indexOf(
-                        findUser(request)),
-                profile);
-        boolean saved = save(users, false);
-        if (saved) {
-            return profile;
+
+        // Search the list by phone number to find the exact array position
+        int targetIndex = -1;
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getPhone().equals(request.username())) {
+                targetIndex = i;
+                break;
+            }
+        }
+
+        // If user is found, update status, swap in the list, and write to disk
+        if (targetIndex != -1) {
+            Profile profile = users.get(targetIndex);
+            profile.setStatus(UserStatus.ACTIVE_USER);
+            users.set(targetIndex, profile);
+
+            boolean saved = save(users, false);
+            if (saved) {
+                return profile;
+            }
         }
         return null;
     }
+
 }

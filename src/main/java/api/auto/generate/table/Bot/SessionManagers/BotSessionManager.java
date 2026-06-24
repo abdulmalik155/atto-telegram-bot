@@ -29,7 +29,8 @@ public class BotSessionManager implements BotHandler {
         if (step.startsWith("/start")
                 || step.startsWith("register_")
                 || step.startsWith("login")
-                || step.startsWith("confirm")) {
+                || step.startsWith("confirm")
+        || step.startsWith("Register Complete")) {
             manageAuth(session, message, bot);
         }
 
@@ -109,9 +110,9 @@ public class BotSessionManager implements BotHandler {
                             text, session.getConfirmationCode());
                     if (authController.confirmCode(authConfirm)) {
                         bot.send(chatId, "Code confirmed!");
-                        session.setCurrentStep("register_complete");
+                        session.setCurrentStep("Register Complete");
 
-                        bot.oneFunctionButton(chatId, "register_complete", "register_complete <- shuni bosib yuborin", false);
+                        bot.oneFunctionButton(chatId, "Register Complete", "Register Complete <- shuni bosib yuborin", false);
                     } else {
                         bot.send(chatId, "Ha jigar nima bo'ldi ne unaqa qivos" +
                                 "\n yoki 1 daqiqalik muddat tugdimi." +
@@ -122,7 +123,7 @@ public class BotSessionManager implements BotHandler {
                     }
                 }
             }
-            case "register_complete" -> {
+            case "Register Complete" -> {
                 AuthRegister authRegister = new AuthRegister(
                         session.getRegistrationProfile().getName(),
                         session.getRegistrationProfile().getSurname(),

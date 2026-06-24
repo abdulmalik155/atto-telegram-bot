@@ -36,6 +36,7 @@
     </dependencies>
 
     <build>
+        <finalName>atto-bot</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -65,9 +66,6 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <!-- CORRECT PLACEMENT: Enforces a reliable, clean name for the output JAR -->
-                            <finalName>atto-bot</finalName>
-
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>api.auto.generate.table.Main</mainClass>
@@ -87,10 +85,9 @@
                     </execution>
                 </executions>
             </plugin>
-
-
         </plugins>
     </build>
+
 
 
 </project>

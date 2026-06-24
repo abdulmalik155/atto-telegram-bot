@@ -1,19 +1,20 @@
-# Stage 1: Build using standard Maven with Java 21
-FROM maven:3-eclipse-temurin-21 AS build
+# Stage 1: Build the application with Java 25
+FROM eclipse-temurin:25-jdk AS build
 WORKDIR /app
 
-# Copy your complete project code directory right away
-COPY . .
+# Copy dependency structures and download them
+COPY pom.xml .
+COPY src ./src
 
 # Run direct clean package build
 RUN mvn clean package -DskipTests
 
-# Stage 2: Clean runtime environment using Java 21
-FROM eclipse-temurin:21-jre
+# Stage 2: Balanced runtime environment using Java 25
+FROM eclipse-temurin:25-jre
 WORKDIR /app
 
-# FIXED: Targets the exact custom final name enforced by your pom.xml
+# Copy the built "fat" executable bundle from stage 1
 COPY --from=build /app/target/atto-bot.jar atto-bot.jar
 
-# Start your Telegram Bot console service
+# Execute application
 ENTRYPOINT ["java", "-jar", "atto-bot.jar"]

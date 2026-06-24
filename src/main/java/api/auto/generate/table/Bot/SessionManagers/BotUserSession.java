@@ -269,8 +269,79 @@ public class BotUserSession implements BotHandler {
         }
     }
 
-
     private void handleTransactionSection(UserSessionDTO session, Message message, AttoBot bot, Update update) {
+        if (message == null || session == null) return;
+
+        long chatId = message.getChatId();
+        String text = message.hasText() ? message.getText().trim() : null;
+        String currentStep = session.getCurrentStep();
+
+        // 1. Button interactions update the step tracking map
+        if (update.hasCallbackQuery()) {
+            currentStep = getCurrentStepIfCallBackQuery(message, bot, update, currentStep);
+            session.setCurrentStep(currentStep);
+        }
+
+        // 2. CRITICAL INTERCEPT FOR TYPED CARD NUMBER TEXT INPUTS
+        if ("USER_transaction_section_card_number".equals(currentStep) && text != null) {
+            session.setCardNumber(text);
+
+            List<Terminal> terminalList = new ArrayList<>(new api.auto.generate.table.repository.TerminalRepository().read());
+            if (!terminalList.isEmpty()) {
+                Collections.shuffle(terminalList);
+                Terminal terminal = terminalList.getLast();
+                bot.send(chatId, terminal.toString());
+            }
+
+            terminalCodeInput(session, message, bot, chatId);
+            session.setCurrentStep("USER_transaction_section_terminal_code");
+            return; // Break processing loop successfully
+        }
+
+        // 3. CRITICAL INTERCEPT FOR TYPED TERMINAL CODES TEXT INPUTS
+        if ("USER_transaction_section_terminal_code".equals(currentStep) && text != null) {
+            api.auto.generate.table.dto.PaymentRequest paymentRequest = new api.auto.generate.table.dto.PaymentRequest(session.getCardNumber(), text);
+            String result = profileController.makePayment(paymentRequest, session.getAuthenticatedUser());
+
+            if (result != null) {
+                if (result.equals("Success")) {
+                    bot.send(chatId, "✅ " + result);
+                } else {
+                    bot.send(chatId, "❌ " + result + " Try again!");
+                }
+                session.setCurrentStep("USER_transaction_section");
+                transactionSectionMenu(message, bot);
+            }
+            return; // Break processing loop successfully
+        }
+
+        // 4. Standard Inline Action Router menu paths
+        switch (currentStep) {
+            case "USER_transaction_section" -> transactionSectionMenu(message, bot);
+
+            case "USER_transaction_section_transaction_list" -> {
+                List<Transaction> transactions = profileController.transactionList(session.getAuthenticatedUser());
+                if (transactions.isEmpty()) {
+                    bot.send(chatId, "No transactions found!");
+                } else {
+                    for (Transaction transaction : transactions) {
+                        bot.send(chatId, String.valueOf(transaction));
+                    }
+                }
+                session.setCurrentStep("USER_transaction_section");
+                transactionSectionMenu(message, bot);
+            }
+
+            case "USER_transaction_section_make_payment" -> {
+                cardInput(session, message, bot, chatId);
+                session.setCurrentStep("USER_transaction_section_card_number");
+            }
+        }
+    }
+
+
+
+ /*   private void handleTransactionSection(UserSessionDTO session, Message message, AttoBot bot, Update update) {
         if (message == null || session == null) return;
 
         long chatId = message.getChatId();
@@ -331,7 +402,7 @@ public class BotUserSession implements BotHandler {
 
         }
 
-    }
+    }*/
 
     private static void transactionSectionMenu(Message message, AttoBot bot) {
         Stack<String> buttons = new Stack<>();

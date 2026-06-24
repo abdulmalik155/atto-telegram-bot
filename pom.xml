@@ -58,6 +58,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.5.1</version>
+                <finalName>atto-bot</finalName>
                 <executions>
                     <execution>
                         <phase>package</phase>

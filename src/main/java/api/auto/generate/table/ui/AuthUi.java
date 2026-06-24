@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class AuthUi {
     private final AuthController authController = new AuthController();
 
-    public void run() {
+   /* public void run() {
         authController.triggerAutomationWorker();
         authController.triggerAutomationWorker2();
         while (true) {
@@ -28,7 +28,30 @@ public class AuthUi {
                 }
             }
         }
-    }
+    }*/
+   public void run() {
+       // If running on Render, bypass the console menu completely
+       if (System.getenv("RENDER") != null) {
+           System.out.println("Render environment detected. Bypassing interactive menu.");
+           authController.triggerAutomationWorker();
+           authController.triggerAutomationWorker2();
+           authByBot();
+           return;
+       }
+
+       authController.triggerAutomationWorker();
+       authController.triggerAutomationWorker2();
+
+       // Otherwise, run the interactive local menu
+       while (true) {
+           switch (authUsingBotOrAppMenu()) {
+               case 1 -> authByBot();
+               case 2 -> authByApp();
+               case 0 -> { return; }
+           }
+       }
+   }
+
 
     private void authByBot(){
         try{

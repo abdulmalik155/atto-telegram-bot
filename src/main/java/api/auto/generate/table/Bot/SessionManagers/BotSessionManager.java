@@ -34,11 +34,7 @@ public class BotSessionManager implements BotHandler {
             manageAuth(session, message, bot);
         }
 
-        if (session.getCurrentStep().startsWith("ADMIN")) {
-            bot.send(message.getChatId(), "Login successful! Adminjon");
-            bot.send(message.getChatId(), "Building the Admin Panel");
-            botAdminSession.processWorkflow(session, message, bot, update);
-        } else if (session.getCurrentStep().startsWith("USER")) {
+         if (session.getCurrentStep().startsWith("USER")) {
             if (session.getLoginCount() == 0) {
                 bot.send(message.getChatId(), "Login successful! \uD83D\uDD13 \n" + session.getAuthenticatedUser().getName().trim().toUpperCase());
                 session.setLoginCount(1);

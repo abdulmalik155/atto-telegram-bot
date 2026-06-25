@@ -221,20 +221,32 @@ public class BotUserSession implements BotHandler {
                 cardSectionMenu(message, bot);
             }
             case "USER_card_section_add_card" -> {
-                Card card = profileController.addCard(session.getAuthenticatedUser());
-                if (card != null) {
-                    bot.send(chatId, "Card Added ✅");
-                    bot.send(chatId, String.valueOf(card));
-                } else {
-                    String earlyClickMsg = "❌ *Card Generation Incomplete*\n\n" +
-                            "We couldn't find a completed card request for your profile yet.\n\n" +
-                            "💡 *Reason:* The 1-minute background card creator hasn't run yet.\n" +
-                            "⏳ Please wait a moment and try pushing the button again!";
-                    bot.send(chatId, earlyClickMsg);
+                String cardStatus = profileController.verifyCardGenerationStatus(chatId);
+                switch (cardStatus) {
+                    case "ACTIVE"->{
+                        Card card = profileController.addCard(session.getAuthenticatedUser());
+                        if (card != null) {
+                            bot.send(chatId, "Card Added ✅");
+                            bot.send(chatId, String.valueOf(card));
+                        } else {
+                            String earlyClickMsg = "❌ *Card Generation Incomplete*\n\n" +
+                                    "We couldn't find a completed card request for your profile yet.\n\n" +
+                                    "💡 *Reason:* The 1-minute background card creator hasn't run yet.\n" +
+                                    "⏳ Please wait a moment and try pushing the button again!";
+                            bot.send(chatId, earlyClickMsg);
 
+                        }
+                        session.setCurrentStep("USER_card_section");
+                        cardSectionMenu(message, bot);
+                    }
+                    case "PROCESSING"-> {
+                        bot.send(chatId, "⏳ Karta hali tayyor emas. Fon tizimi ishlamoqda, iltimos 5 soniya kuting...");
+                    }
+                    case "NOT_FOUND"->{
+                        bot.send(chatId, "❌ Sizda tayyorlangan karta so'rovi topilmadi. Avval Karta so'rovini bosing.");
+                    }
                 }
-                session.setCurrentStep("USER_card_section");
-                cardSectionMenu(message, bot);
+
             }
             case "USER_card_section_card_request" -> {
                 cardRequest(message, bot);

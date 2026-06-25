@@ -44,4 +44,8 @@ public class ProfileController {
     public List<Transaction> transactionList(Profile profile) {
         return profileService.transactionList(profile);
     }
+
+    public String verifyCardGenerationStatus(long chatId){
+        return profileService.verifyCardGenerationStatus(chatId);
+    }
 }

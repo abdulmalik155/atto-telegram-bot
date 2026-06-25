@@ -184,7 +184,7 @@ public class ProfileService {
         Optional<Card> card = cardRepository
                 .read()
                 .stream()
-                        .filter(card1 -> card1.getCardNumber().equals(paymentRequest.cardNumber())).findFirst();
+                .filter(card1 -> card1.getCardNumber().equals(paymentRequest.cardNumber())).findFirst();
         card.ifPresent(transaction::setCard);
         transaction.setCreatedDate(LocalDate.now());
         transaction.setTerminalCode(terminal.getCode());
@@ -243,5 +243,17 @@ public class ProfileService {
                 .read()
                 .stream()
                 .filter(transaction -> cards.contains(transaction.getCard())).toList();
+    }
+
+    public synchronized String verifyCardGenerationStatus(long chatId) {
+        Optional<Card> pendingCard = cardRepository.read().stream()
+                .filter(card -> card.getUser() != null && card.getUser().getChatId() == chatId)
+                .findFirst();
+
+        if (pendingCard.isPresent()) {
+            Card card = pendingCard.get();
+            return card.getStatus().toString();
+        }
+        return "NOT_FOUND";
     }
 }

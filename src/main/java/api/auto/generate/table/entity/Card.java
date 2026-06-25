@@ -26,10 +26,10 @@ public class Card {
         String cardIcon = (status == Status.ACTIVE) ? "🟩 " : "🟥 ";
         return String.format(
                 "\n💳 CARD DETAILED VIEW\n" +
-                        "🔢 Number: `%s`\n" +
+                        "🔢 Number: %s\n" +
                         "%s Status: %s\n" +
                         "💰 Balance: %,.2f UZS\n" +
-                        "📅 Issued: %s | ⏳ Expired: `%s`\n" +
+                        "📅 Issued: %s | ⏳ Expired: %s\n" +
                         "👤 Holder: %s\n",
                 cardNumber,
                 cardIcon, status,

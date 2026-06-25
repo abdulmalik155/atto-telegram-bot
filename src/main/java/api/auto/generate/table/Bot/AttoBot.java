@@ -42,6 +42,14 @@ public class AttoBot extends TelegramLongPollingBot {
         long chatId;
         String text = "";
 
+
+        System.out.println("=== NEW UPDATE RECEIVED ===");
+        if (update.hasMessage()) {
+            System.out.println("Message text: " + update.getMessage().getText());
+        } else if (update.hasCallbackQuery()) {
+            System.out.println("Callback clicked: " + update.getCallbackQuery().getData());
+        }
+
         if (update.hasMessage()) {
             chatId = update.getMessage().getChatId();
             if (update.getMessage().hasText()) {

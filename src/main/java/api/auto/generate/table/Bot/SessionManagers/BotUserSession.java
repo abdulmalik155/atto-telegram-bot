@@ -221,31 +221,19 @@ public class BotUserSession implements BotHandler {
                 cardSectionMenu(message, bot);
             }
             case "USER_card_section_add_card" -> {
-                String cardStatus = profileController.verifyCardGenerationStatus(chatId);
-                switch (cardStatus) {
-                    case "ACTIVE" -> {
-                        Card card = profileController.addCard(session.getAuthenticatedUser());
-                        if (card != null) {
-                            bot.send(chatId, "Card Added ✅\n\n" + card.toString());
-
-                            // Advance step ONLY when the card is successfully created!
-                            session.setCurrentStep("USER_card_section");
-                            cardSectionMenu(message, bot);
-                        } else {
-                            // If this triggers, it proves the bug is inside your profileController.addCard() method!
-                            bot.send(chatId, "⚠️ System Error: profileController.addCard returned null. Check your profile mapping.");
-
-                            // DO NOT change the step or re-render the menu yet, keep the window active so it doesn't freeze up!
-                        }
-                    }
-                    case "PROCESSING"-> {
-                        bot.send(chatId, "⏳ Karta hali tayyor emas. Fon tizimi ishlamoqda, iltimos 5 soniya kuting...");
-                    }
-                    case "NOT_FOUND"->{
-                        bot.send(chatId, "❌ Sizda tayyorlangan karta so'rovi topilmadi. Avval Karta so'rovini bosing.");
-                    }
+                Card card = profileController.addCard(session.getAuthenticatedUser());
+                if (card != null) {
+                    bot.send(chatId, "Card Added ✅");
+                    bot.send(chatId, String.valueOf(card));
+                } else {
+                    String earlyClickMsg = "❌ Card Generation Incomplete\n\n" +
+                            "We couldn't find a completed card request for your profile yet.\n\n" +
+                            "💡 Reason: The 1-minute background card creator hasn't run yet.\n" +
+                            "⌛ Please wait a moment and try pushing the button again!";
+                    bot.send(chatId, earlyClickMsg);
                 }
-
+                session.setCurrentStep("USER_card_section");
+                cardSectionMenu(message, bot);
             }
             case "USER_card_section_card_request" -> {
                 cardRequest(message, bot);

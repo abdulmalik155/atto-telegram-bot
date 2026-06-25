@@ -87,7 +87,7 @@ public class AdminService {
                 }).toList();
     }
 
-    private Card generateCard(String cardType) {
+    public Card generateCard(String cardType) {
         Card card = new Card();
         String cardNumber = cardType;
         for (int i = 0; i < 12; i++) {

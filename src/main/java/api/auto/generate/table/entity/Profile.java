@@ -22,7 +22,6 @@ public class Profile {
     private UserStatus status;
     private Boolean visibleUser;
     private Role role;
-    private long chatId;
 
     @Override
     public String toString() {

@@ -27,7 +27,48 @@ public class ProfileService {
         return cardRequestRepository.request(request);
     }
 
+
     public Card addCard(Profile profile) {
+        Optional<CardRequest> cardRequests = cardRequestRepository.read()
+                .stream().filter(cardRequest -> cardRequest.getProfile().getPhone().equals(profile.getPhone())
+                        && cardRequest.getStatus().equals(CardRequestStatus.DONE)).findFirst();
+
+        if (cardRequests.isPresent()) {
+            CardRequest cardRequest = cardRequests.get();
+            Card card = cardRequest.getCard();
+            card.setActivationDate(LocalDate.now());
+
+            List<Card> currentCards = cardRepository.read();
+            List<Card> updatedCardList = new java.util.ArrayList<>();
+
+            for (Card card1 : currentCards) {
+                if (card1.getUser() != null &&
+                        card1.getUser().getPhone() != null &&
+                        card1.getUser().getPhone().equals(profile.getPhone()) &&
+                        card1.getCardNumber().equals(card.getCardNumber())) {
+
+                    card1.setActivationDate(card.getActivationDate());
+                    card1.setStatus(Status.ACTIVE);
+                    updatedCardList.add(card1);
+                } else {
+                    updatedCardList.add(card1);
+                }
+            }
+
+            if (cardRepository.save(updatedCardList, false)) {
+                List<CardRequest> requests = cardRequestRepository
+                        .read()
+                        .stream()
+                        .filter(request -> !request.getProfile().getPhone().equals(profile.getPhone()))
+                        .toList();
+                cardRequestRepository.save(requests, false);
+                return card;
+            }
+        }
+        return null;
+    }
+
+    /*    public Card addCard(Profile profile) {
         Optional<CardRequest> cardRequests = cardRequestRepository.read()
                 .stream().filter(cardRequest -> cardRequest.getProfile().getPhone().equals(profile.getPhone())
                         && cardRequest.getStatus().equals(CardRequestStatus.DONE)).findFirst();
@@ -56,7 +97,7 @@ public class ProfileService {
             }
         }
         return null;
-    }
+    }*/
 
     public List<Card> cardList(Profile profile) {
         return cardRepository
